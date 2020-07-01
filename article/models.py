@@ -1,0 +1,22 @@
+from django.db import models
+from user.models import UserProfile
+import django.utils.timezone as timezone
+
+# 文章分类
+class ArticleCategory(models.Model):
+    name = models.CharField(max_length=40, unique=True, verbose_name="文章分类")
+
+
+# Create your models here.
+#  文章对象
+class ArticlePost(models.Model):
+    # 文章作者
+    author = models.ForeignKey(UserProfile, on_delete=models.PROTECT, verbose_name="文章作者")
+    ategory = models.ForeignKey(ArticleCategory, on_delete=models.CASCADE, verbose_name="文章分类")
+    title = models.CharField(max_length=40, blank=False, default="未命名", verbose_name="标题")
+    content = models.TextField(verbose_name="正文内容")
+    create = models.DateField(default=timezone.now(), verbose_name="创建日期")
+    update = models.DateTimeField(auto_now=True, verbose_name="更新日期")
+
+
+
