@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+
 @login_required
 def get_user_view(request):
     result = {
@@ -50,6 +51,7 @@ def login_view(request):
         "status": "400",
         "result": "缺少必要参数"
     }
+
     # 检查参数
     if request.POST:
         try:
@@ -67,9 +69,10 @@ def login_view(request):
                     "status": "200",
                     "result": "验证通过"
                 }
+                print(request.user.is_authenticated)
             else:
                 result = {
-                    "status": "200",
+                    "status": "201",
                     "result": "验证失败"
                 }
     return JsonResponse(result)
@@ -81,3 +84,15 @@ def logout_view(request):
     logout(request)
     return HttpResponse("ok")
 
+
+def login_redirect_view(request):
+    result = {
+        "status": "400",
+        "result": "error"
+    }
+    if request.GET:
+        result = {
+            "status": "302",
+            "result": "未通过验证"
+        }
+    return JsonResponse(result)

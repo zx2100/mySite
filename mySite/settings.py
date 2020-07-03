@@ -133,4 +133,4 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'user.UserProfile'
 
 # 登录重定向
-LOGIN_URL = "/user/login"
+LOGIN_URL = "/user/redirect"
