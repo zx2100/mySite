@@ -1,7 +1,5 @@
 # codeing:utf-8
-from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from django.views import View
 from .models import *
 import json
 from django.core.serializers import serialize
@@ -17,6 +15,8 @@ def get_user_view(request):
         "status": "400",
         "result": "Not Found"
     }
+    print("s")
+    print(request.COOKIES)
     if request.GET:
         try:
             user = request.GET['user']
@@ -24,6 +24,7 @@ def get_user_view(request):
 
             result["result"] = "参数错误"
         else:
+            print(request)
             #  返回查询对象
             query_set = UserProfile.objects.filter(username=user)
             # 判断是否找到
@@ -42,7 +43,8 @@ def get_user_view(request):
                 # 只返回fields字段内容
                 result['result'] = json_data[0]["fields"]
                 result['status'] = "200"
-    return JsonResponse(result)
+    result = JsonResponse(result)
+    return result
 
 
 def login_view(request):
@@ -53,16 +55,22 @@ def login_view(request):
     }
 
     # 检查参数
-    if request.POST:
+    if request.body:
+        #
+        print(request.COOKIES)
         try:
-            username = request.POST["username"]
-            passwd = request.POST["passwd"]
+            # 取出用户名
+            username = json.loads(request.body)["username"]
+            passwd = json.loads(request.body)["passwd"]
+            # print(username, passwd)
         except Exception as e:
             result["result"] = "参数错误"
         else:
             # 登录验证
             user = authenticate(username=username, password=passwd)
+
             if user is not None:
+                # 如果验证成功
                 # 加入login会话中，加入后，会返回cookies
                 login(request, user)
                 result = {
@@ -72,10 +80,13 @@ def login_view(request):
                 print(request.user.is_authenticated)
             else:
                 result = {
-                    "status": "201",
+                    "status": "401",
                     "result": "验证失败"
                 }
-    return JsonResponse(result)
+    result = JsonResponse(result)
+    result.set_cookie()
+    return result
+
 
 
 @login_required
