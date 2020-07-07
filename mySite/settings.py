@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
     # 文章
     'article',
     # 用户
@@ -44,6 +46,27 @@ INSTALLED_APPS = [
     'corsheaders',
 
 ]
+
+AUTH_USER_MODEL = 'app.UserProfile' # UserProfile继承了user
+import datetime
+
+
+
+REST_FRAMEWORK = {
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    #     'rest_framework.authentication.SessionAuthentication',
+    #     'rest_framework.authentication.BasicAuthentication',
+    # ),
+}
+JWT_AUTH = {
+    # token的有效期
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    # 'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

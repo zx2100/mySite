@@ -30,4 +30,3 @@ class UserProfile(AbstractUser):
     def __str__(self):
         return self.username
 
-    # 设置密码

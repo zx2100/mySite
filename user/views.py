@@ -1,109 +1,39 @@
 # codeing:utf-8
-from django.http import HttpResponse, JsonResponse
-from .models import *
-import json
-from django.core.serializers import serialize
-#  使用django自带的认证
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-# Create your views here.
+from .models import UserProfile
+from django.http import HttpResponse
+from .serializers import UserProfileSerializers
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import generics, permissions, status
+from rest_framework.authtoken.models import Token
+from rest_framework_jwt.settings import api_settings
+from django.contrib.auth import authenticate, login
+from django.shortcuts import Http404
 
 
-@login_required
-def get_user_view(request):
-    result = {
-        "status": "400",
-        "result": "Not Found"
-    }
-    print("s")
-    print(request.COOKIES)
-    if request.GET:
-        try:
-            user = request.GET['user']
-        except Exception as e:
-
-            result["result"] = "参数错误"
-        else:
-            print(request)
-            #  返回查询对象
-            query_set = UserProfile.objects.filter(username=user)
-            # 判断是否找到
-            if query_set:
-                # 序列化Json,返回指定数据
-                json_data = json.loads(serialize('json', query_set, fields=(
-                    'last_login',
-                    'username',
-                    "email",
-                    "date_joined",
-                    "birthday",
-                    "gender",
-                    "phone_number",
-                    "is_vip"
-                )))
-                # 只返回fields字段内容
-                result['result'] = json_data[0]["fields"]
-                result['status'] = "200"
-    result = JsonResponse(result)
-    return result
+class auth_view(APIView):
+    def post(self, request):
+        user = authenticate(username=request.data["username"], password=request.data["password"])
+        # 认证通过
+        if not user:
+            raise Http404("账号密码不匹配")
+        # login(request, user)
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
+        return Response({"success": True, "msg": "登录成功", "results": token}, status=status.HTTP_200_OK)
 
 
-def login_view(request):
-    """处理登录"""
-    result = {
-        "status": "400",
-        "result": "缺少必要参数"
-    }
-
-    # 检查参数
-    if request.body:
-        #
-        print(request.COOKIES)
-        try:
-            # 取出用户名
-            username = json.loads(request.body)["username"]
-            passwd = json.loads(request.body)["passwd"]
-            # print(username, passwd)
-        except Exception as e:
-            result["result"] = "参数错误"
-        else:
-            # 登录验证
-            user = authenticate(username=username, password=passwd)
-
-            if user is not None:
-                # 如果验证成功
-                # 加入login会话中，加入后，会返回cookies
-                login(request, user)
-                result = {
-                    "status": "200",
-                    "result": "验证通过"
-                }
-                print(request.user.is_authenticated)
-            else:
-                result = {
-                    "status": "401",
-                    "result": "验证失败"
-                }
-    result = JsonResponse(result)
-    result.set_cookie()
-    return result
+# 查看或创建用户
+class UserProfileView(generics.ListCreateAPIView):
+    # 配置认证信息
+    def get(self, request):
+        queryset = UserProfile.objects.all()
+        serializer = UserProfileSerializers(queryset, many=True)
+        return Response(serializer.data)
 
 
-
-@login_required
-def logout_view(request):
-    # 登出绘画
-    logout(request)
-    return HttpResponse("ok")
-
-
-def login_redirect_view(request):
-    result = {
-        "status": "400",
-        "result": "error"
-    }
-    if request.GET:
-        result = {
-            "status": "302",
-            "result": "未通过验证"
-        }
-    return JsonResponse(result)
+class UserProfileDetilView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializers
