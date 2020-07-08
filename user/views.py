@@ -7,10 +7,8 @@ from rest_framework import generics, status
 from django.contrib.auth import authenticate
 from django.shortcuts import Http404
 from rest_framework_jwt.settings import api_settings
-from .premissions import UserViewPremissions
+from .permissions import OnlySuperAdmin
 from rest_framework.permissions import IsAuthenticated
-import base64
-import json
 
 
 # 这个视图不需要认证
@@ -40,28 +38,24 @@ class AuthView(APIView):
 
 # 查看或创建用户
 class UserProfileView(APIView):
-    permission_classes = [IsAuthenticated, UserViewPremissions]
+    """
+    只有超级管理员才能调用此视图
+    """
+    permission_classes = [IsAuthenticated, OnlySuperAdmin]
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.queryset = UserProfile.objects.all()
-        self.user = {}
     # 配置认证信息
-    def get(self, request):
-        # 获取用户名
-        # token = request.data['Authorization']
-        # 获取token中的数据
-        token_info = json.loads(base64.b64decode(request.headers["Authorization"].split(" ")[1].split(".")[1]+"=="))
 
-        self.user = {
-            "id": token_info['user_id'],
-            "username": token_info['username']
-        }
+    def get(self, request):
         serializer = UserProfileSerializers(self.queryset, many=True)
         return Response(serializer.data)
 
 
 
+
 class UserProfileDetilView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializers
