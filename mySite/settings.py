@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
 ]
 
-AUTH_USER_MODEL = 'app.UserProfile' # UserProfile继承了user
+AUTH_USER_MODEL = 'app.UserProfile'
 import datetime
 
 REST_FRAMEWORK = {
@@ -63,6 +63,7 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     # token的有效期
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    # 'JWT_AUTH_HEADER_PREFIX': None,
 }
 
 MIDDLEWARE = [
