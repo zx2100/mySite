@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 class AuthView(APIView):
     # 不做权限检查
     permission_classes = []
+
     def post(self, request):
         print("sada")
         user = authenticate(username=request.data["username"], password=request.data["password"])
@@ -28,11 +29,18 @@ class AuthView(APIView):
         payload = jwt_payload_handler(user)
         token = jwt_encode_handler(payload)
         result = Response({
-            "success": True,
-            "status": status.HTTP_200_OK,
-            "msg": "登录成功",
-            "results": token,
+            "data": {
+                "token": token,
+                "username": user.username,
+                "userid": user.id
+            },
+            "meta": {
+                "status": status.HTTP_200_OK,
+                "msg": "登录成功"
+            }
+
         }, status=status.HTTP_200_OK)
+
         return result
 
 
@@ -51,8 +59,6 @@ class UserProfileView(APIView):
     def get(self, request):
         serializer = UserProfileSerializers(self.queryset, many=True)
         return Response(serializer.data)
-
-
 
 
 class UserProfileDetilView(generics.RetrieveUpdateDestroyAPIView):

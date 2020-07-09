@@ -27,9 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-print(BASE_DIR)
-
-sys.path.insert(0, os.path.join(BASE_DIR, "utils"))
 # Application definition
 
 INSTALLED_APPS = [
