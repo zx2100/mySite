@@ -13,6 +13,6 @@ class GetALLView(APIView):
     def get(self, request):
         query_set = ArticlePost.objects.all()
         result = ArticlePostSerializers(query_set, many=True)
-        print(result)
+        # print(result)
         result = Response(result.data, status=status.HTTP_200_OK)
         return result
