@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from django.http.response import HttpResponse
 from rest_framework import status
@@ -6,19 +5,7 @@ from rest_framework import status
 from .models import *
 from .serializers import ArticleGetSerializers, ArticlePostSerializers
 from rest_framework.views import APIView
-
-
-class MyResponse(Response):
-    # 返回渲染器
-    def __init__(self, code, msg, data, *arks, **kwargs):
-        self.ret_msg = {
-            "meta": {
-                "status": code,
-                "msg": msg
-            },
-            "data": data
-        }
-        super().__init__(self.ret_msg, *arks, **kwargs)
+from utils.MyResponse import MyResponse
 
 
 class GetALLView(APIView):
@@ -31,6 +18,7 @@ class GetALLView(APIView):
         # print(result)
         result = MyResponse(data=result.data, code=status.HTTP_200_OK, msg="获取成功")
         return result
+
 
     # 保存文章
 

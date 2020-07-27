@@ -17,7 +17,25 @@ class ArticleGetSerializers(serializers.ModelSerializer):
         update = time.strptime(result['update'].split(".")[0], "%Y-%m-%dT%H:%M:%S")
         result['create'] = time.strftime('%Y-%m-%d %H:%M', create)
         result['update'] = time.strftime('%Y-%m-%d %H:%M', update)
+        # 处理简介
+        result = self.to_brief(result)
+        # 组成文章简介。如
+
         return result
+
+    def to_brief(self, obj):
+        """
+
+        :param obj:
+        :return: 处理简介内容
+        简介内容如果没有，则返回正文的前50-100个字符
+        """
+        if obj["brief"] == "":
+            obj["brief"] = obj["content"][:90] + "..."
+        #     如果简介本身大于73字符，则返前面73个字符
+        elif len(obj["brief"]) > 90:
+            obj["brief"] = obj["brief"][:90] + "..."
+        return obj
 
     class Meta:
         model = ArticlePost

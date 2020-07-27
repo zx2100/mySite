@@ -9,6 +9,7 @@ from django.shortcuts import Http404
 from rest_framework_jwt.settings import api_settings
 from .permissions import OnlySuperAdmin
 from rest_framework.permissions import IsAuthenticated
+from utils.MyResponse import MyResponse
 
 
 # 这个视图不需要认证
@@ -17,7 +18,6 @@ class AuthView(APIView):
     permission_classes = []
 
     def post(self, request):
-        print("sada")
         user = authenticate(username=request.data["username"], password=request.data["password"])
         print(user)
         # 认证通过
@@ -28,19 +28,13 @@ class AuthView(APIView):
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
         payload = jwt_payload_handler(user)
         token = jwt_encode_handler(payload)
-        result = Response({
-            "data": {
+        result = {
                 "token": token,
                 "username": user.username,
                 "userid": user.id
-            },
-            "meta": {
-                "status": status.HTTP_200_OK,
-                "msg": "登录成功"
-            }
+        }
 
-        }, status=status.HTTP_200_OK)
-
+        result = MyResponse(data=result, msg="认证通过", code=status.HTTP_200_OK)
         return result
 
 
