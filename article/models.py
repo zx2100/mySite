@@ -2,7 +2,7 @@ from django.db import models
 from user.models import UserProfile
 import django.utils.timezone as timezone
 # Create your models here.
-
+import mongoengine
 
 # 文章分类
 class ArticleCategory(models.Model):
@@ -17,7 +17,7 @@ class ArticleCategory(models.Model):
         return self.name
 
 
-#  文章对象
+#  文章对象/Mysql
 class ArticlePost(models.Model):
     # 文章作者
     author = models.ForeignKey(UserProfile, on_delete=models.PROTECT, verbose_name="文章作者")
@@ -36,3 +36,6 @@ class ArticlePost(models.Model):
     def __str__(self):
         return self.title
 
+class Articles(mongoengine.Document):
+    # author = mongoengine
+    pass

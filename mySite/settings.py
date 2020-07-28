@@ -111,7 +111,16 @@ DATABASES = {
         'PASSWORD': 'Shell523569!',
         'HOST': '172.81.215.108',
         'PORT': '3306',
+    },
+    'mongodb': {
+        'ENGINE': 'django_mongodb_engine',
+        'NAME': 'one',
+        'USER': 'admin',
+        'PASSWORD': 'Shell523569!',
+        'HOST': '172.81.215.108',
+        'PORT': '27017',
     }
+
 }
 
 

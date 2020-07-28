@@ -19,7 +19,6 @@ class GetALLView(APIView):
         result = MyResponse(data=result.data, code=status.HTTP_200_OK, msg="获取成功")
         return result
 
-
     # 保存文章
 
 
@@ -27,15 +26,19 @@ class PostArticle(APIView):
     permission_classes = []
 
     def post(self, request):
-        # print(request.data)
+        print(request.data)
 
         # 验证数据
-        serializer = ArticlePostSerializers(data=request.data)
-        if serializer.is_valid():
-            print("验证通过")
-            serializer.save()
-            print(serializer.data)
-        else:
-            print(serializer.errors)
+        # serializer = ArticlePostSerializers(data=request.data)
+        # if serializer.is_valid():
+        #     print("验证通过")
+        #     serializer.save()
+        #     print(serializer.data)
+        # else:
+        #     print(serializer.errors)
 
-        return Response(serializer.errors)
+        # return Response(serializer.errors)
+        return HttpResponse("xxx")
+        # 文章保存在mongodb中
+        import mongoengine
+        mongoengine
