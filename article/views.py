@@ -38,7 +38,16 @@ class PostArticle(APIView):
         #     print(serializer.errors)
 
         # return Response(serializer.errors)
-        return HttpResponse("xxx")
+
         # 文章保存在mongodb中
-        import mongoengine
-        mongoengine
+        from mongoengine import connect
+        result = connect('project',
+                         alias="project",
+                         host='172.81.215.108:27017',
+                         port=27017,
+                         username="admin",
+                         password="Shell523569!",
+                         authentication_source='one')
+
+        print(result)
+        return HttpResponse("xxx")

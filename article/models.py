@@ -36,6 +36,13 @@ class ArticlePost(models.Model):
     def __str__(self):
         return self.title
 
+
 class Articles(mongoengine.Document):
-    # author = mongoengine
-    pass
+    author = mongoengine.StringField(required=True, max_length=100)  # 作者,应该判断是否为当前用户
+    category = mongoengine.StringField(required=True, max_length=100)  # 文章分类
+    title = mongoengine.StringField(required=True, max_length=100)  # 标题
+    brief = mongoengine.StringField(required=True, max_length=100)  # 内容简介
+    content = mongoengine.StringField(required=True)  # Markdown的文章内容
+    created = mongoengine.DateTimeField()   # 创建时间
+    updated = mongoengine.DateTimeField()   # 修改时间
+    meta = {'collection': 'articles'}
