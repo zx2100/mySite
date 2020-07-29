@@ -18,6 +18,7 @@ class AuthView(APIView):
     permission_classes = []
 
     def post(self, request):
+        # Bearer 认证通过后加上Bearer
         user = authenticate(username=request.data["username"], password=request.data["password"])
         print(user)
         # 认证通过

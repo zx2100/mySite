@@ -115,6 +115,14 @@ DATABASES = {
 
 }
 
+# 新建mongodb连接
+from mongoengine import connect
+connect('one',
+        alias="mongodb",
+        host='172.81.215.108:27017',
+        port=27017,
+        username="admin",
+        password="Shell523569!")
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

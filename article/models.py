@@ -1,8 +1,9 @@
 from django.db import models
 from user.models import UserProfile
-import django.utils.timezone as timezone
 # Create your models here.
 import mongoengine
+import datetime
+
 
 # 文章分类
 class ArticleCategory(models.Model):
@@ -17,24 +18,24 @@ class ArticleCategory(models.Model):
         return self.name
 
 
-#  文章对象/Mysql
-class ArticlePost(models.Model):
-    # 文章作者
-    author = models.ForeignKey(UserProfile, on_delete=models.PROTECT, verbose_name="文章作者")
-    ategory = models.ForeignKey(ArticleCategory, on_delete=models.CASCADE, verbose_name="文章分类")
-    title = models.CharField(max_length=40, blank=False, default="未命名", verbose_name="标题")
-    brief = models.CharField(max_length=100, blank=False, default="", verbose_name="文章简介")
-    content = models.TextField(verbose_name="正文内容")
-    create = models.DateTimeField(default=timezone.now, verbose_name="创建日期")
-    update = models.DateTimeField(auto_now=True, verbose_name="更新日期")
-
-    class Meta:
-        verbose_name = "文章"
-        verbose_name_plural = verbose_name
-        db_table = 'article_post'
-
-    def __str__(self):
-        return self.title
+#  文章对象/Mysql 取消使用
+# class ArticlePost(models.Model):
+#     # 文章作者
+#     author = models.ForeignKey(UserProfile, on_delete=models.PROTECT, verbose_name="文章作者")
+#     ategory = models.ForeignKey(ArticleCategory, on_delete=models.CASCADE, verbose_name="文章分类")
+#     title = models.CharField(max_length=40, blank=False, default="未命名", verbose_name="标题")
+#     brief = models.CharField(max_length=100, blank=False, default="", verbose_name="文章简介")
+#     content = models.TextField(verbose_name="正文内容")
+#     create = models.DateTimeField(default=timezone.now, verbose_name="创建日期")
+#     update = models.DateTimeField(auto_now=True, verbose_name="更新日期")
+#
+#     class Meta:
+#         verbose_name = "文章"
+#         verbose_name_plural = verbose_name
+#         db_table = 'article_post'
+#
+#     def __str__(self):
+#         return self.title
 
 
 class Articles(mongoengine.Document):
@@ -43,6 +44,9 @@ class Articles(mongoengine.Document):
     title = mongoengine.StringField(required=True, max_length=100)  # 标题
     brief = mongoengine.StringField(required=True, max_length=100)  # 内容简介
     content = mongoengine.StringField(required=True)  # Markdown的文章内容
-    created = mongoengine.DateTimeField()   # 创建时间
+    created = mongoengine.DateTimeField(required=True)   # 创建时间
     updated = mongoengine.DateTimeField()   # 修改时间
-    meta = {'collection': 'articles'}
+    meta = {
+        'collection': 'articles',   # 存放到指定集合中
+        'db_alias': 'mongodb',   # 选择连接的数据库实例
+    }
