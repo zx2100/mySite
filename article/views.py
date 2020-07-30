@@ -6,9 +6,11 @@ from rest_framework import status
 from .models import *
 # from .serializers import ArticleGetSerializers, ArticlePostSerializers
 from rest_framework.views import APIView
+from rest_framework.exceptions import ParseError
 from utils.MyResponse import MyResponse
 from utils.getUser import TokenGetUser
 import datetime
+
 
 class GetALLView(APIView):
     permission_classes = []
@@ -43,56 +45,47 @@ class PostArticle(APIView):
 
         # 文章保存在mongodb中
 
-        # result = connect('one',
-        #                  alias="mongodb",
-        #                  host='172.81.215.108:27017',
-        #                  port=27017,
-        #                  username="admin",
-        #                  password="Shell523569!")
-        #
-        # print(result)
-        # 保存文章到mongodb
-        # post = Articles()
-        # # 对数据的一系列判断
-        # post.author = "test"
-        # post.brief = "xxxx"
-        # post.category = "xxx"
-        # post.title = "谢谢谢谢"
-        # post.content = "xxxxssda"
-        # # post.updated = "xxxx"
-        # result = post.save()
-        # print(result._data)
-        # post = Post()
-        # post.create(request.data)
-        # print(post.save())
-
         # 获取用户
         user = TokenGetUser(request.headers.get('Authorization')).info()
-
         # 新建文章对象
+        print(request.data)
         new_post = Post()
         new_post.create(data=request.data, user=user['uname'])
-        new_post.save()
         return HttpResponse("xxx")
 
 
 class Post:
     def __init__(self, *args, **kwargs):
-
         self.post = ""
 
     def create(self, data, user):
-        att = data['data']
+        """
+        创建对象，成功返回True.失败返回False
+        :param data:
+        :param user:
+        :return:
+        """
+        att = data.get('data')
         self.post = Articles()
         self.post.author = user
-        self.post.brief = att["brief"]
-        self.post.category = att["category"]
-        self.post.title = att["title"]
+        self.post.brief = att.get("brief")
+        # 判断分类是否合法
+        if not self.has_category(att.get('category')):
+            raise ParseError("文章分类有误")
+        self.post.category = att.get("category")
+        self.post.title = att.get("title")
         self.post.content = att["content"]
         self.post.created = datetime.datetime.now()
+
+    def has_category(self, category):
+        """
+        判断分类是否合法
+        :param category:
+        :return:
+        """
+        print(category)
+        return True if ArticleCategory.objects.filter(name=category).count() > 0 else False
 
     def save(self):
         if self.post:
             return self.post.save()
-
-
