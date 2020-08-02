@@ -1,8 +1,20 @@
-# # from .models import ArticlePost
-# from rest_framework import serializers
-# import time
+# from .models import ArticlePost
+from rest_framework import serializers
+import time
+from .models import Articles
 #
-#
+
+
+class ArticleGetSerializers(serializers.ModelSerializer):
+
+    class Meta:
+        model = Articles
+        fields = '__all__'
+        # 获取深度，如果有字段外键的话，就往里面再次获取
+        # depth = 1
+
+
+
 # # 获取文章
 # class ArticleGetSerializers(serializers.ModelSerializer):
 #     # serializers.PrimaryKeyRelatedField(many=True, queryset=UserProfile.objects.all())

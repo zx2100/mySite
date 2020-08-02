@@ -7,5 +7,5 @@ from rest_framework.urlpatterns import format_suffix_patterns
 urlpatterns = [
     path('all', GetALLView.as_view()),
     path('post', PostArticle.as_view()),
-    # path('post2', PostArticle.as_view()),
+
 ]

@@ -19,7 +19,7 @@ class AuthView(APIView):
 
     def post(self, request):
         # Bearer 认证通过后加上Bearer
-        user = authenticate(username=request.data["username"], password=request.data["password"])
+        user = authenticate(username=request.data.get("username"), password=request.data.get("password"))
         print(user)
         # 认证通过
         if not user:

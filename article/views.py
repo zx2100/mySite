@@ -4,12 +4,14 @@ from django.http.response import HttpResponse
 from rest_framework import status
 # Create your views here.
 from .models import *
-# from .serializers import ArticleGetSerializers, ArticlePostSerializers
+from .serializers import ArticleGetSerializers
 from rest_framework.views import APIView
 from rest_framework.exceptions import ParseError
-from utils.MyResponse import MyResponse
-from utils.getUser import TokenGetUser
+# from utils.MyResponse import MyResponse
+# from utils.getUser import TokenGetUser
 import datetime
+
+from utils.getUser import TokenGetUser
 
 
 class GetALLView(APIView):
@@ -24,10 +26,21 @@ class GetALLView(APIView):
     #     return result
 
     # 保存文章
+    def get(self, request):
+        print("获取文章视图")
+
+        # qa = obj.objects.all()
+        # for item in obj.objects:
+        #     print(item.author)
+        data = []
+
+        test = ArticleGetSerializers(Articles.objects)
+        print(test)
+        return HttpResponse("x13")
 
 
 class PostArticle(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
     def post(self, request):
         # print(request.headers['Authorization'])
@@ -46,14 +59,18 @@ class PostArticle(APIView):
         # 文章保存在mongodb中
 
         # 获取用户
+        print("提交文章视图")
+        print(request.data)
+
         user = TokenGetUser(request.headers.get('Authorization')).info()
         # 新建文章对象
-        print(request.data)
+
         new_post = Post()
-        new_post.create(data=request.data, user=user['uname'])
+        new_post.create(data=request.data, user=user.get('uname'))
         return HttpResponse("xxx")
 
 
+# post新文章
 class Post:
     def __init__(self, *args, **kwargs):
         self.post = ""
@@ -89,3 +106,5 @@ class Post:
     def save(self):
         if self.post:
             return self.post.save()
+
+
