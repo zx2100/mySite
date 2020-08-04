@@ -7,7 +7,7 @@ from .models import *
 from .serializers import ArticleGetSerializers
 from rest_framework.views import APIView
 from rest_framework.exceptions import ParseError
-# from utils.MyResponse import MyResponse
+from utils.MyResponse import MyResponse
 # from utils.getUser import TokenGetUser
 import datetime
 
@@ -32,15 +32,14 @@ class GetALLView(APIView):
         # qa = obj.objects.all()
         # for item in obj.objects:
         #     print(item.author)
-        data = []
+        # 获取所有文档
+        data = Articles.objects.get_some(2)
 
-        test = ArticleGetSerializers(Articles.objects)
-        print(test)
-        return HttpResponse("x13")
+        return MyResponse(code=status.HTTP_200_OK, msg="获取成功", data=data)
 
 
 class PostArticle(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # print(request.headers['Authorization'])
@@ -67,6 +66,7 @@ class PostArticle(APIView):
 
         new_post = Post()
         new_post.create(data=request.data, user=user.get('uname'))
+        new_post.save()
         return HttpResponse("xxx")
 
 

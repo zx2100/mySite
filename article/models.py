@@ -2,8 +2,9 @@ from django.db import models
 from user.models import UserProfile
 # Create your models here.
 import mongoengine
+from mongoengine import queryset_manager
 import datetime
-
+import time
 
 # 文章分类
 class ArticleCategory(models.Model):
@@ -38,15 +39,40 @@ class ArticleCategory(models.Model):
 #         return self.title
 
 
+class MyQuerySet(mongoengine.QuerySet):
+    # 获取一些数据
+    def get_some(self, count):
+        data = []
+        # 字段排除
+        except_field = ["id"]
+        # 获取数据，可以在self中指定获取多少条数据
+        for item in self[:count]:
+            obj = {}
+            for field in item:
+                # 排除字段
+                if field in except_field:
+                    continue
+                #  序列化时间
+                if field == "created" or field == "updated":
+                    item[field] = str(item[field]).split('.')[0] if item[field] else ""
+
+                obj[field] = str(item[field])
+            data.append(obj)
+        return data
+
+
 class Articles(mongoengine.Document):
     author = mongoengine.StringField(required=True, max_length=100)  # 作者,应该判断是否为当前用户
     category = mongoengine.StringField(required=True, max_length=100)  # 文章分类
     title = mongoengine.StringField(required=True, max_length=100)  # 标题
     brief = mongoengine.StringField(required=True, max_length=100)  # 内容简介
     content = mongoengine.StringField(required=True)  # Markdown的文章内容
-    created = mongoengine.DateTimeField(required=True)   # 创建时间
-    updated = mongoengine.DateTimeField()   # 修改时间
+    created = mongoengine.DateTimeField(required=True)  # 创建时间
+    updated = mongoengine.DateTimeField()  # 修改时间
     meta = {
-        'collection': 'articles',   # 存放到指定集合中
-        'db_alias': 'mongodb',   # 选择连接的数据库实例
+        'collection': 'articles',  # 存放到指定集合中
+        'db_alias': 'mongodb',  # 选择连接的数据库实例
+        'queryset_class': MyQuerySet  # 自定义过滤器
     }
+
+
