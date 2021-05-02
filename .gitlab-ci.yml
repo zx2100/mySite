@@ -1,6 +1,3 @@
-stages:
-  - first
-  - second
 job1:
   stage: .pre
   script:
