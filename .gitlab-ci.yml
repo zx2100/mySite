@@ -1,4 +1,7 @@
-jobs:
+stages:
+  - first
+  - second
+job1:
   stage: .pre
   script:
     - echo "task1"
