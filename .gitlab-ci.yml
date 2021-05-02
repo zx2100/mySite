@@ -1,5 +1,3 @@
-stages:
-  - .pre
 jobs:
   stage: .pre
   script:
