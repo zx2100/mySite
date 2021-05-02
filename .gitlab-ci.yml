@@ -1,3 +1,5 @@
+stages:
+  - .pre
 任务1:
   stage: .pre
   script:
