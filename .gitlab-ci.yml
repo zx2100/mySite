@@ -1,4 +1,5 @@
 job1:
+  stage: .pre
   script: "execute-script-for-job1"
 
 job2:
