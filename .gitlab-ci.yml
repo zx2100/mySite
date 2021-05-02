@@ -2,6 +2,6 @@ stages:
   - test
 
 test_all:
-  stages: test
+  stage: test
   script:
     - "echo asdasd"
