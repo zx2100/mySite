@@ -1,6 +1,6 @@
 stages:
-  - init
   - build
+  - init
   - deploy
 初始化任务:
   stage: init
