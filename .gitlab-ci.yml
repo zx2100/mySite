@@ -17,7 +17,7 @@ buildJob:
     - echo "打包任务"
 
 DeployJob:
-  stage: build
+  stage: deploy
   tags:
     - devops
   script:
