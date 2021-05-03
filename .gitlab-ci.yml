@@ -1,9 +1,9 @@
 stages:
   - build
   - deploy
-job1:
+初始化任务:
   stage: build
   tags:
     - devops
   script:
-    - echo "test123"
+    - echo "初始化任务"
