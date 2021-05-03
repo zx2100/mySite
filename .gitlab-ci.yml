@@ -1,7 +1,7 @@
 stages:
   - build
   - deploy
-初始化任务:
+job_init:
   stage: build
   tags:
     - devops
