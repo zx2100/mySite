@@ -1,9 +1,24 @@
 stages:
+  - init
   - build
   - deploy
 初始化任务:
-  stage: build
+  stage: init
   tags:
     - devops
   script:
     - echo "初始化任务"
+
+buildJob:
+  stage: build
+  tags:
+    - devops
+  script:
+    - echo "打包任务"
+
+DeployJob:
+  stage: build
+  tags:
+    - devops
+  script:
+    - echo "DeployJob"
