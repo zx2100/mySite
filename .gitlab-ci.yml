@@ -16,7 +16,8 @@ buildJob:
   tags:
     - devops
   script:
-    - echo "打包任务"
+    - echco "打包任务"
+  allow-failure: true
 
 DeployJob:
   stage: deploy
