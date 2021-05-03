@@ -2,5 +2,6 @@ job1:
   stage: .pre
   tags:
     - devops
-  script: echo "execute-script-for-job1"
+  script: 
+    - echo "execute-script-for-job1"
 
