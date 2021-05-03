@@ -1,7 +1,9 @@
+stages:
+  - build
+  - deploy
 job1:
-  stage: .pre
+  stage: build
   tags:
     - devops
-  script: 
-    - echo "execute-script-for-job1"
-
+  script:
+    - echo "test123"
