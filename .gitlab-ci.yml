@@ -1,5 +1,7 @@
 job1:
   stage: .pre
+  tags:
+    - devops
   script: "execute-script-for-job1"
 
 job2:
