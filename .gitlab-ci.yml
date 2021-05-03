@@ -25,3 +25,11 @@ DeployJob:
     - devops
   script:
     - echo "DeployJob"
+
+DeployJob2:
+  stage: deploy
+  tags:
+    - devops
+  script:
+    - echo "DeployJob"
+  when: manual
