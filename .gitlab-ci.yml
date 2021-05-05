@@ -5,6 +5,9 @@
 # for the default branch and all other (MR) branches.
 variables:
   CI_COMMIT_BRANCH: master
+  CI_REGISTRY_USER: admin
+  CI_REGISTRY_PASSWORD: Harbor12345
+  CI_REGISTRY: http://192.168.81.51:30002
 docker-build:
   # Use the official docker image.
   image: docker:latest
