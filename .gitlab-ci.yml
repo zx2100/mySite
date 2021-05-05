@@ -8,6 +8,8 @@ variables:
 docker-build:
   # Use the official docker image.
   image: docker:latest
+  tags:
+    - container
   stage: build
   services:
     - docker:dind
