@@ -7,7 +7,7 @@ variables:
   CI_COMMIT_BRANCH: master
 docker-build:
   # Use the official docker image.
-  image: docker:latest
+  image: docker:stable
   tags:
     - container
   stage: build
