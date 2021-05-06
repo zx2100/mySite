@@ -10,7 +10,7 @@ from rest_framework_jwt.settings import api_settings
 from .permissions import OnlySuperAdmin
 from rest_framework.permissions import IsAuthenticated
 from utils.MyResponse import MyResponse
-
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 # 这个视图不需要认证
 class AuthView(APIView):
@@ -39,13 +39,30 @@ class AuthView(APIView):
         return result
 
 
+class TokenAuth:
+    def authenticate(self, request):
+        from rest_framework.exceptions import AuthenticationFailed
+        from rest_framework_jwt.serializers import VerifyAuthTokenSerializer
+        token = {"token": None}
+        # print(request.META.get("HTTP_TOKEN"))
+        token["token"] = request.META.get('HTTP_TOKEN')
+        valid_data = VerifyAuthTokenSerializer().validate(token)
+        print(valid_data)
+        user = valid_data['user']
+        print(user)
+        if user:
+            return
+        else:
+            from utils.Myexception import custom_exception_handler
+            raise AuthenticationFailed('认证失败')
+
 # 查看或创建用户
 class UserProfileView(APIView):
     """
     只有超级管理员才能调用此视图
     """
+    authentication_classes = [JSONWebTokenAuthentication]
     permission_classes = [IsAuthenticated, OnlySuperAdmin]
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.queryset = UserProfile.objects.all()
@@ -56,7 +73,8 @@ class UserProfileView(APIView):
         return Response(serializer.data)
 
 
-class UserProfileDetilView(generics.RetrieveUpdateDestroyAPIView):
+class UserProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializers
+

@@ -7,6 +7,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 urlpatterns = [
     path('auth', AuthView.as_view()),
     path('profile', UserProfileView.as_view()),
-    path('profile/<int:pk>', UserProfileDetilView.as_view())
+    path('profile/<int:pk>', UserProfileDetailView.as_view())
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
