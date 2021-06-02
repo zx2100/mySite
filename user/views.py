@@ -11,6 +11,8 @@ from .permissions import OnlySuperAdmin
 from rest_framework.permissions import IsAuthenticated
 from utils.MyResponse import MyResponse
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from django.core.cache import cache
+
 
 # 这个视图不需要认证
 class AuthView(APIView):
@@ -26,9 +28,13 @@ class AuthView(APIView):
             raise Http404("账号密码不匹配")
         # login(request, user)
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        # print(jwt_payload_handler)
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
         payload = jwt_payload_handler(user)
         token = jwt_encode_handler(payload)
+        # print(token)
+        # token保存到redis中
+        cache.set(token,user.username)
         result = {
                 "token": token,
                 "username": user.username,
@@ -39,22 +45,6 @@ class AuthView(APIView):
         return result
 
 
-class TokenAuth:
-    def authenticate(self, request):
-        from rest_framework.exceptions import AuthenticationFailed
-        from rest_framework_jwt.serializers import VerifyAuthTokenSerializer
-        token = {"token": None}
-        # print(request.META.get("HTTP_TOKEN"))
-        token["token"] = request.META.get('HTTP_TOKEN')
-        valid_data = VerifyAuthTokenSerializer().validate(token)
-        print(valid_data)
-        user = valid_data['user']
-        print(user)
-        if user:
-            return
-        else:
-            from utils.Myexception import custom_exception_handler
-            raise AuthenticationFailed('认证失败')
 
 # 查看或创建用户
 class UserProfileView(APIView):
@@ -78,3 +68,14 @@ class UserProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializers
 
+
+class Test(APIView):
+    permission_classes = []
+
+    def __init__(self):
+        pass
+
+    def get(self, request):
+
+        cache.set ("xxsasxa", "admin", 60)
+        return MyResponse(data="其死亡")
