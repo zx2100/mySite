@@ -168,3 +168,18 @@ AUTH_USER_MODEL = 'user.UserProfile'
 
 # 登录重定向
 LOGIN_URL = "/user/redirect"
+
+# 集成redis
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://172.81.215.108:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": 'Shell523569!'
+
+        }
+    }
+}
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
