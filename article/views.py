@@ -7,11 +7,11 @@ from .models import *
 from .serializers import ArticleGetSerializers
 from rest_framework.views import APIView
 from rest_framework.exceptions import ParseError
-from utils.MyResponse import MyResponse
-# from utils.getUser import TokenGetUser
+from utils.my_response import MyResponse
+
 import datetime
 
-from utils.getUser import TokenGetUser
+from utils.my_tools import Token
 
 
 class GetALLView(APIView):
@@ -61,7 +61,7 @@ class PostArticle(APIView):
         print("提交文章视图")
         print(request.data)
 
-        user = TokenGetUser(request.headers.get('Authorization')).info()
+        user = Token.get_user(request.headers.get('Authorization'))
         # 新建文章对象
 
         new_post = Post()

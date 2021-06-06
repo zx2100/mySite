@@ -53,16 +53,19 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 自定义认证
+        'utils.my_authentication.MyAuthentication',
     ),
-    'EXCEPTION_HANDLER': 'utils.Myexception.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'utils.my_exception.custom_exception_handler',
+
 }
 JWT_AUTH = {
     # token的有效期
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
-    # 'JWT_AUTH_HEADER_PREFIX': None,
+    'JWT_AUTH_HEADER_PREFIX': None,
 }
 
 MIDDLEWARE = [

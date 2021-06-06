@@ -2,6 +2,7 @@ from rest_framework import permissions
 import json
 import base64
 from .models import UserProfile
+from utils.my_tools import Token
 
 
 class OnlySuperAdmin(permissions.DjangoObjectPermissions):
@@ -12,7 +13,7 @@ class OnlySuperAdmin(permissions.DjangoObjectPermissions):
 
     def has_permission(self, request, view):
         # 获取用户名
-        token_info = json.loads(base64.b64decode(request.headers["Authorization"].split(" ")[1].split(".")[1] + "=="))
+        token_info = json.loads(base64.b64decode(request.headers["Authorization"].split(".")[1] + "=="))
         username = token_info['username']
         # 根据是否超级管理员返回结果
         return UserProfile.objects.filter(username=username).first().is_superuser
