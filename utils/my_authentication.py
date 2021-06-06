@@ -1,14 +1,10 @@
-
-from rest_framework.authentication import BaseAuthentication
 from django_redis import get_redis_connection
-from user.models import UserProfile
-
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework_jwt import authentication
+from rest_framework.exceptions import AuthenticationFailed, NotAuthenticated
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 import jwt
 
 
-class MyAuthentication(authentication.JSONWebTokenAuthentication):
+class MyAuthentication(JSONWebTokenAuthentication):
 
     def __init__(self):
         self.request = None
@@ -16,6 +12,8 @@ class MyAuthentication(authentication.JSONWebTokenAuthentication):
     def authenticate(self, request):
         self.request = request
         token = self.get_head("Authorization")
+        if not token:
+            raise NotAuthenticated('未通过认证')
         # 验证请求头token是否过期
         try:
             payload = self.jwt_decode_token(token)

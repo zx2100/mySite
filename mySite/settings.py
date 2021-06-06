@@ -110,11 +110,11 @@ WSGI_APPLICATION = 'mySite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'my_site',
-        'USER': 'one',
-        'PASSWORD': 'Shell523569!',
-        'HOST': '172.81.215.108',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASS'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 
 }
@@ -123,10 +123,10 @@ DATABASES = {
 from mongoengine import connect
 connect('one',
         alias="mongodb",
-        host='172.81.215.108:27017',
-        port=27017,
-        username="admin",
-        password="Shell523569!")
+        host=os.getenv("MON_HOST"),
+        port=os.getenv("MON_PORT"),
+        username=os.getenv("MON_USER"),
+        password=os.getenv("MON_PASS"))
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -176,7 +176,7 @@ LOGIN_URL = "/user/redirect"
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://172.81.215.108:6379/1",
+        "LOCATION": "redis://%s:%s/%s" % (os.getenv("REDIS_HOST"), os.getenv("REDIS_PORT"), os.getenv("REDIS_DB")),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "PASSWORD": 'Shell523569!'
@@ -186,3 +186,4 @@ CACHES = {
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
+
